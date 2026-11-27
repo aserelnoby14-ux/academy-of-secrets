@@ -3,13 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a0618">
 <title>أكاديمية الأسرار</title>
 <link rel="stylesheet" href="styles.css">
+<script>
+window.addEventListener('error', function (e) {
+  try {
+    var box = document.createElement('pre');
+    box.style.cssText = 'position:fixed;inset:0;background:#1a0a2e;color:#ff7a5e;padding:16px;font:12px/1.4 monospace;z-index:99999;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left';
+    box.textContent = 'JS ERROR:\n' + e.message + '\n\n' + (e.filename || '') + ':' + e.lineno + '\n\n' + (e.error && e.error.stack ? e.error.stack : '');
+    document.body.appendChild(box);
+    e.preventDefault();
+  } catch (_) {}
+});
+window.addEventListener('unhandledrejection', function (e) {
+  try {
+    var box = document.createElement('pre');
+    box.style.cssText = 'position:fixed;inset:0;background:#1a0a2e;color:#ff7a5e;padding:16px;font:12px/1.4 monospace;z-index:99999;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left';
+    box.textContent = 'UNHANDLED PROMISE:\n' + (e.reason && e.reason.stack ? e.reason.stack : e.reason);
+    document.body.appendChild(box);
+  } catch (_) {}
+});
+</script>
 </head>
 <body>
 <div id="app">
 
-  <!-- Main Menu -->
   <section id="screen-menu" class="screen active">
     <div class="menu-bg"></div>
     <div class="menu-content">
@@ -23,7 +42,6 @@
     </div>
   </section>
 
-  <!-- Character Creation -->
   <section id="screen-create" class="screen">
     <h2 class="screen-title">اختر تخصصك الأول</h2>
     <p class="screen-hint">ستتعلم العناصر الأخرى لاحقًا من المعلمين</p>
@@ -34,7 +52,6 @@
     </div>
   </section>
 
-  <!-- Hub -->
   <section id="screen-hub" class="screen">
     <header class="topbar">
       <div class="player-chip" id="player-chip"></div>
@@ -48,38 +65,38 @@
     <div class="hub-grid" id="hub-grid"></div>
   </section>
 
-  <!-- Character -->
   <section id="screen-character" class="screen">
     <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>الشخصية</h3></header>
     <div id="character-body" class="content-body"></div>
   </section>
 
-  <!-- Skill Tree -->
   <section id="screen-skills" class="screen">
     <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>شجرة المهارات</h3></header>
     <div class="tab-strip" id="skill-tabs"></div>
     <div id="skill-body" class="content-body"></div>
   </section>
 
-  <!-- Quests -->
   <section id="screen-quests" class="screen">
     <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>المهام</h3></header>
     <div id="quests-body" class="content-body"></div>
   </section>
 
-  <!-- Inventory -->
   <section id="screen-inventory" class="screen">
     <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>الحقيبة</h3></header>
     <div id="inventory-body" class="content-body"></div>
   </section>
 
-  <!-- World Map -->
   <section id="screen-world" class="screen">
     <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>خريطة العالم</h3></header>
     <div id="world-body" class="content-body"></div>
   </section>
 
-  <!-- Combat -->
+  <!-- ✅ SCREEN ACADEMY — كانت ناقصة -->
+  <section id="screen-academy" class="screen">
+    <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>الأكاديمية</h3></header>
+    <div id="academy-body" class="content-body"></div>
+  </section>
+
   <section id="screen-combat" class="screen">
     <div class="combat-stage" id="combat-stage">
       <div class="enemy-panel" id="enemy-panel"></div>
@@ -95,7 +112,6 @@
     </div>
   </section>
 
-  <!-- Modal -->
   <div id="modal" class="modal" hidden>
     <div class="modal-card">
       <h3 id="modal-title"></h3>
@@ -104,7 +120,6 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="toast" hidden></div>
 
 </div>
