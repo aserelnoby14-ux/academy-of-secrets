@@ -3,7 +3,17 @@ const Game = {
   pendingElement: null,
 
   init() {
-    // Wire data-action buttons — كل واحدة مستقلة
+    let audioInitialized = false;
+    const initAudio = () => {
+      if (audioInitialized) return;
+      AudioSystem.init();
+      audioInitialized = true;
+      document.removeEventListener('touchstart', initAudio);
+      document.removeEventListener('mousedown', initAudio);
+    };
+    document.addEventListener('touchstart', initAudio);
+    document.addEventListener('mousedown', initAudio);
+
     document.querySelectorAll('[data-action]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
@@ -12,12 +22,12 @@ const Game = {
       });
     });
 
-    // Wire nav buttons
     document.querySelectorAll('[data-nav]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
         const nav = el.dataset.nav;
         try {
+          AudioSystem.play('click');
           UI.showScreen(nav);
           const fn = UI['render' + nav.charAt(0).toUpperCase() + nav.slice(1)];
           if (typeof fn === 'function') fn.call(UI);
@@ -27,7 +37,6 @@ const Game = {
       });
     });
 
-    // Confirm element
     const confirmBtn = document.getElementById('btn-confirm-element');
     if (confirmBtn) {
       confirmBtn.addEventListener('click', () => {
@@ -35,7 +44,6 @@ const Game = {
       });
     }
 
-    // Continue button state — محمي بالكامل
     try {
       const cont = document.getElementById('btn-continue');
       if (cont) cont.disabled = !SaveSystem.hasSave();
@@ -48,20 +56,25 @@ const Game = {
 
   action(a) {
     if (a === 'new-game') {
+      AudioSystem.play('click');
       UI.renderCreateScreen();
       UI.showScreen('create');
     } else if (a === 'continue-game') {
+      AudioSystem.play('click');
       const s = SaveSystem.load();
       if (s) {
         this.state = s;
         UI.showScreen('hub');
         UI.renderHub();
       } else {
+        AudioSystem.play('error');
         UI.toast('لا يوجد حفظ سابق');
       }
     } else if (a === 'back-menu') {
+      AudioSystem.play('click');
       UI.showScreen('menu');
     } else if (a === 'show-help') {
+      AudioSystem.play('click');
       this.showHelp();
     }
   },
@@ -93,6 +106,7 @@ const Game = {
       },
       playedAt: Date.now()
     };
+    AudioSystem.play('level_up');
     SaveSystem.save(this.state);
     UI.showScreen('hub');
     UI.renderHub();
@@ -100,6 +114,7 @@ const Game = {
   },
 
   showAcademy() {
+    AudioSystem.play('click');
     UI.showScreen('academy');
     UI.renderAcademy();
   },
@@ -107,12 +122,19 @@ const Game = {
   learnFromTeacher(elementId) {
     const s = this.state;
     if (!s) return UI.toast('ابدأ لعبة أولًا');
-    if (s.elements.includes(elementId)) return UI.toast('تعلمت هذا العنصر بالفعل');
-    if (s.gold < 100) return UI.toast('تحتاج 100 ذهب للتعلم');
+    if (s.elements.includes(elementId)) {
+      AudioSystem.play('error');
+      return UI.toast('تعلمت هذا العنصر بالفعل');
+    }
+    if (s.gold < 100) {
+      AudioSystem.play('error');
+      return UI.toast('تحتاج 100 ذهب للتعلم');
+    }
     s.gold -= 100;
     s.elements.push(elementId);
     const firstSpell = elementId + '_' + ELEMENTS[elementId].spells[0].id;
     if (!s.unlockedSpells.includes(firstSpell)) s.unlockedSpells.push(firstSpell);
+    AudioSystem.play('unlock');
     UI.toast('تعلمت ' + ELEMENTS[elementId].name + '!');
     this.trackQuest('talk_teacher');
     SaveSystem.save(s);
@@ -125,9 +147,13 @@ const Game = {
     if (!s) return UI.toast('ابدأ لعبة أولًا');
     const spell = ELEMENTS[element].spells.find(x => x.id === spellId);
     if (!spell) return;
-    if (s.skillPoints < spell.tier) return UI.toast('نقاط مهارة غير كافية');
+    if (s.skillPoints < spell.tier) {
+      AudioSystem.play('error');
+      return UI.toast('نقاط مهارة غير كافية');
+    }
     s.skillPoints -= spell.tier;
     s.unlockedSpells.push(element + '_' + spellId);
+    AudioSystem.play('unlock');
     UI.toast('فتحت ' + spell.name + '!');
     SaveSystem.save(s);
     UI.renderSkills();
@@ -140,9 +166,13 @@ const Game = {
     const f = FUSIONS.find(x => x.id === fusionId);
     if (!f) return;
     if (s.fusions.includes(fusionId)) return;
-    if (s.skillPoints < 2) return UI.toast('تحتاج نقطتي مهارة');
+    if (s.skillPoints < 2) {
+      AudioSystem.play('error');
+      return UI.toast('تحتاج نقطتي مهارة');
+    }
     s.skillPoints -= 2;
     s.fusions.push(fusionId);
+    AudioSystem.play('unlock');
     UI.toast('اكتشفت ' + f.name + '!');
     this.trackQuest('fusion');
     SaveSystem.save(s);
@@ -151,6 +181,7 @@ const Game = {
   },
 
   enterZone(zone) {
+    AudioSystem.play('click');
     const enemyId = zone.enemies[Math.floor(Math.random() * zone.enemies.length)];
     const template = ENEMIES.find(e => e.id === enemyId);
     if (!template) return;
@@ -249,6 +280,7 @@ const Game = {
         s.hp = s.maxHp;
         s.mp = s.maxMp;
         s.skillPoints += 2;
+        AudioSystem.play('level_up');
         UI.toast('ارتقيت للمستوى ' + s.level + '!');
       }
 
@@ -297,6 +329,7 @@ const Game = {
     if (r.exp) s.exp += r.exp;
     if (r.gold) s.gold += r.gold;
     if (r.skill) s.skillPoints += r.skill;
+    AudioSystem.play('unlock');
     UI.toast('أكملت: ' + q.name + '!');
     QUESTS.forEach(next => {
       if (next.requires && next.requires.includes(q.id) && s.questStates[next.id] === 'locked') {
