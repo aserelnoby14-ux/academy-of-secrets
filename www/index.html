@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>أكاديمية الأسرار</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Main Menu -->
+  <section id="screen-menu" class="screen active">
+    <div class="menu-bg"></div>
+    <div class="menu-content">
+      <h1 class="game-title">أكاديمية الأسرار</h1>
+      <p class="game-subtitle">إرث العناصر</p>
+      <div class="menu-buttons">
+        <button class="btn btn-primary" data-action="new-game">لعبة جديدة</button>
+        <button class="btn btn-secondary" data-action="continue-game" id="btn-continue" disabled>متابعة</button>
+        <button class="btn btn-ghost" data-action="show-help">كيف ألعب؟</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Character Creation -->
+  <section id="screen-create" class="screen">
+    <h2 class="screen-title">اختر تخصصك الأول</h2>
+    <p class="screen-hint">ستتعلم العناصر الأخرى لاحقًا من المعلمين</p>
+    <div id="element-grid" class="element-grid"></div>
+    <div class="footer-actions">
+      <button class="btn btn-ghost" data-action="back-menu">رجوع</button>
+      <button class="btn btn-primary" id="btn-confirm-element" disabled>ابدأ الرحلة</button>
+    </div>
+  </section>
+
+  <!-- Hub -->
+  <section id="screen-hub" class="screen">
+    <header class="topbar">
+      <div class="player-chip" id="player-chip"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" data-nav="character" title="الشخصية">👤</button>
+        <button class="icon-btn" data-nav="quests" title="المهام">📜</button>
+        <button class="icon-btn" data-nav="inventory" title="الحقيبة">🎒</button>
+        <button class="icon-btn" data-nav="settings" title="إعدادات">⚙️</button>
+      </div>
+    </header>
+    <div class="hub-grid" id="hub-grid"></div>
+  </section>
+
+  <!-- Character -->
+  <section id="screen-character" class="screen">
+    <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>الشخصية</h3></header>
+    <div id="character-body" class="content-body"></div>
+  </section>
+
+  <!-- Skill Tree -->
+  <section id="screen-skills" class="screen">
+    <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>شجرة المهارات</h3></header>
+    <div class="tab-strip" id="skill-tabs"></div>
+    <div id="skill-body" class="content-body"></div>
+  </section>
+
+  <!-- Quests -->
+  <section id="screen-quests" class="screen">
+    <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>المهام</h3></header>
+    <div id="quests-body" class="content-body"></div>
+  </section>
+
+  <!-- Inventory -->
+  <section id="screen-inventory" class="screen">
+    <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>الحقيبة</h3></header>
+    <div id="inventory-body" class="content-body"></div>
+  </section>
+
+  <!-- World Map -->
+  <section id="screen-world" class="screen">
+    <header class="subbar"><button class="icon-btn" data-nav="hub">←</button><h3>خريطة العالم</h3></header>
+    <div id="world-body" class="content-body"></div>
+  </section>
+
+  <!-- Combat -->
+  <section id="screen-combat" class="screen">
+    <div class="combat-stage" id="combat-stage">
+      <div class="enemy-panel" id="enemy-panel"></div>
+      <div class="combat-fx" id="combat-fx"></div>
+      <div class="player-bars" id="player-bars"></div>
+    </div>
+    <div class="combat-controls">
+      <div class="spell-bar" id="spell-bar"></div>
+      <div class="combat-actions">
+        <button class="btn-action" data-combat="dodge" id="btn-dodge">تفادي</button>
+        <button class="btn-action danger" data-combat="flee" id="btn-flee">هروب</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card">
+      <h3 id="modal-title"></h3>
+      <div id="modal-body"></div>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" hidden></div>
+
+</div>
+<script src="js/data.js"></script>
+<script src="js/save.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
