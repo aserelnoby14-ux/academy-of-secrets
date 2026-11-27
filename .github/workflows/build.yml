@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -24,22 +25,34 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
 
-      - name: Install dependencies
+      - name: Verify SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          sdkmanager --list_installed || true
+
+      - name: Install npm dependencies
         run: npm install
 
-      - name: Add Android platform
+      - name: Add Capacitor Android platform
         run: npx cap add android
 
-      - name: Sync web assets
+      - name: Sync web assets into Android project
         run: npx cap sync
 
       - name: Build Debug APK
         working-directory: android
-        run: chmod +x ./gradlew && ./gradlew assembleDebug
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: academy-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
