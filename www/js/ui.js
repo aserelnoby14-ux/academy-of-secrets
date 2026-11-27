@@ -42,6 +42,7 @@ const UI = {
       btn.className = 'btn ' + (a.className || 'btn-primary');
       btn.textContent = a.label;
       btn.onclick = () => {
+        AudioSystem.play('click');
         modal.hidden = true;
         if (a.onClick) a.onClick();
       };
@@ -73,6 +74,7 @@ const UI = {
         '<div class="element-name">' + el.name + '</div>' +
         '<div class="element-desc">' + el.desc + '</div>';
       card.addEventListener('click', () => {
+        AudioSystem.play('click');
         document.querySelectorAll('.element-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         const confirmBtn = document.getElementById('btn-confirm-element');
@@ -104,6 +106,7 @@ const UI = {
         '<div class="tile-name">' + t.name + '</div>' +
         '<div class="tile-sub">' + t.sub + '</div>';
       tile.addEventListener('click', () => {
+        AudioSystem.play('click');
         if (t.key === 'academy') { Game.showAcademy(); return; }
         UI.showScreen(t.key);
         const fn = UI['render' + t.key.charAt(0).toUpperCase() + t.key.slice(1)];
@@ -166,7 +169,7 @@ const UI = {
       const t = document.createElement('button');
       t.className = 'tab-btn' + (eid === s._skillTab ? ' active' : '');
       t.textContent = el.icon + ' ' + el.name;
-      t.onclick = () => { s._skillTab = eid; UI.renderSkills(); };
+      t.onclick = () => { AudioSystem.play('click'); s._skillTab = eid; UI.renderSkills(); };
       tabs.appendChild(t);
     });
 
@@ -293,7 +296,10 @@ const UI = {
       el.addEventListener('click', () => {
         const z = ZONES.find(x => x.id === el.dataset.zone);
         if (!z) return;
-        if (!s.unlockedZones.includes(z.id)) return UI.toast('منطقة مقفلة — أكمل المتطلبات');
+        if (!s.unlockedZones.includes(z.id)) {
+          AudioSystem.play('error');
+          return UI.toast('منطقة مقفلة — أكمل المتطلبات');
+        }
         Game.enterZone(z);
       });
     });
