@@ -1,0 +1,12 @@
+{
+  "appId": "com.academy.secrets",
+  "appName": "أكاديمية الأسرار",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#0a0618"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
